@@ -11,13 +11,8 @@ import { useState } from 'react';
 
 // Importando o componente CurrencySelector que criamos anteriormente.
 import { CurrencySelector } from '@/components/CurrencySelector';
-
-// Criando um objeto com as taxas de câmbio para cada moeda.
-const taxas: Record<string, number> = {
-  USD: 5.30,
-  EUR: 6.20,
-  GBP: 7.10,
-};
+// Função matemática que faz a conversão de moedas, que criamos no arquivo currency.ts.
+import { convertCurrency } from '@/utils/currency';
 
 export default function HomeScreen() {
   // Criar o estado
@@ -37,17 +32,13 @@ export default function HomeScreen() {
     if (!valorNumerico) {
       return;
     }
-
-    // Pega as taxas de câmbio da moeda de origem selecionada do objeto taxas. 
-    // Se a moeda de origem não estiver no objeto, cotacao será undefined.
-    const cotacao = taxas[moedaOrigem];
-
-    if (!cotacao) {
-      return;
-    }
-
-    const valorConvertido = valorNumerico * cotacao;
-
+    // Chamando a função convertCurrency que criamos no arquivo currency.ts, passando o valor digitado, a moeda de origem e a moeda de destino.
+    const valorConvertido = convertCurrency(
+      valorNumerico,
+      moedaOrigem,
+      moedaDestino,
+    );
+    // Atualizando o estado do resultado com o valor convertido.
     setResultado(valorConvertido);
   };
 
