@@ -12,7 +12,8 @@ import { useState } from 'react';
 // Importando o componente CurrencySelector que criamos anteriormente.
 import { CurrencySelector } from '@/components/CurrencySelector';
 // Função matemática que faz a conversão de moedas, que criamos no arquivo currency.ts.
-import { convertCurrency } from '@/utils/currency';
+// Importando a função getExchangeRate que criamos no arquivo currencyApi.ts, que faz a chamada à API de câmbio.
+import { getExchangeRate } from '@/services/currencyApi';
 
 export default function HomeScreen() {
   // Criar o estado
@@ -24,21 +25,37 @@ export default function HomeScreen() {
   // Estados da moeda selecionada
   const [moedaOrigem, setMoedaOrigem] = useState('USD');
 
-  // Função de conversão que será chamada quando o usuário digitar um valor.
-  const converter = () => {
-    const valorNumerico = Number(valor);
+  const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState<string | null>(null);
 
+  // Função de conversão que será chamada quando o usuário digitar um valor.
+  const converter = async () => {
+    // Valor recebido do TextInput.
+    const valorNumerico = Number(valor);
+    // Se o valor digitado não for um número válido, mostramos uma mensagem de erro.
     if (!valorNumerico) {
+      setErro('Digite um valor válido.');
       return;
     }
-    // Chamando a função convertCurrency que criamos no arquivo currency.ts, passando o valor digitado, a moeda de origem e a moeda de destino.
-    const valorConvertido = convertCurrency(
-      valorNumerico,
-      moedaOrigem,
-      'BRL',
-    );
-    // Atualizando o estado do resultado com o valor convertido.
-    setResultado(valorConvertido);
+
+    try {
+      setCarregando(true);
+      setErro(null);
+      setResultado(null);
+      // A api é chamada, passando a moeda de origem e a moeda de destino (BRL).
+      const cotacao = await getExchangeRate(
+        moedaOrigem,
+        'BRL',
+      );
+
+      const valorConvertido = valorNumerico * cotacao;
+
+      setResultado(valorConvertido);
+    } catch (error) {
+      setErro('Não foi possível obter a cotação.');
+    } finally {
+      setCarregando(false);
+    }
   };
 
   return (
@@ -61,7 +78,11 @@ export default function HomeScreen() {
       // Usando o componente CurrencySelector para selecionar a moeda de origem.
       <CurrencySelector
         currency={moedaOrigem}
-        onChange={setMoedaOrigem}
+        onChange={(currency) => {
+          setMoedaOrigem(currency);
+          setResultado(null);
+          setErro(null);
+        }}
       />
 
       <Text style={styles.label}>Para</Text>
@@ -70,13 +91,30 @@ export default function HomeScreen() {
         <Text style={styles.fixedCurrencyText}>🇧🇷 BRL</Text>
       </View>
 
-      <Pressable style={styles.button} onPress={converter}>
-        <Text style={styles.buttonText}>CONVERTER</Text>
+      <Pressable
+        style={[
+          styles.button,
+          carregando && styles.buttonDisabled,
+        ]}
+        onPress={converter}
+        disabled={carregando}
+      >
+        <Text style={styles.buttonText}>
+          {carregando ? 'CONVERTENDO...' : 'CONVERTER'}
+        </Text>
       </Pressable>
+
+      {erro !== null && (
+        <Text style={styles.error}>
+          {erro}
+        </Text>
+      )}
 
       {resultado !== null && (
         <View style={styles.result}>
-          <Text style={styles.resultLabel}>Resultado</Text>
+          <Text style={styles.resultLabel}>
+            Resultado
+          </Text>
 
           <Text style={styles.resultValue}>
             R$ {resultado.toFixed(2)}
@@ -161,6 +199,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#4b5563',
+  },
+
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+
+  error: {
+    color: '#dc2626',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 16,
   },
 
 });
