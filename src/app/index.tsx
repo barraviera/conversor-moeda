@@ -23,7 +23,6 @@ export default function HomeScreen() {
 
   // Estados da moeda selecionada
   const [moedaOrigem, setMoedaOrigem] = useState('USD');
-  const [moedaDestino, setMoedaDestino] = useState('BRL');
 
   // Função de conversão que será chamada quando o usuário digitar um valor.
   const converter = () => {
@@ -36,7 +35,7 @@ export default function HomeScreen() {
     const valorConvertido = convertCurrency(
       valorNumerico,
       moedaOrigem,
-      moedaDestino,
+      'BRL',
     );
     // Atualizando o estado do resultado com o valor convertido.
     setResultado(valorConvertido);
@@ -67,11 +66,9 @@ export default function HomeScreen() {
 
       <Text style={styles.label}>Para</Text>
 
-      // Usando o componente CurrencySelector para selecionar a moeda de destino.
-      <CurrencySelector
-        currency={moedaDestino}
-        onChange={setMoedaDestino}
-      />
+      <View style={styles.fixedCurrency}>
+        <Text style={styles.fixedCurrencyText}>🇧🇷 BRL</Text>
+      </View>
 
       <Pressable style={styles.button} onPress={converter}>
         <Text style={styles.buttonText}>CONVERTER</Text>
@@ -149,6 +146,21 @@ const styles = StyleSheet.create({
   resultValue: {
     fontSize: 32,
     fontWeight: '700',
+  },
+
+  fixedCurrency: {
+    width: '100%',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    backgroundColor: '#f3f4f6',
+  },
+
+  fixedCurrencyText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#4b5563',
   },
 
 });
