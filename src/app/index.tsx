@@ -76,6 +76,7 @@ export default function HomeScreen() {
       <Text style={styles.label}>De</Text>
 
       // Usando o componente CurrencySelector para selecionar a moeda de origem.
+      // Quando o usuário selecionar uma moeda, iremos limpar o resultado e o erro, para que o usuário saiba que precisa clicar em "CONVERTER" novamente.
       <CurrencySelector
         currency={moedaOrigem}
         onChange={(currency) => {
