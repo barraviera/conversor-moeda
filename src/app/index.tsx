@@ -9,12 +9,26 @@ import {
 // Vamos usar o useState para armazenar o valor digitado pelo usuário no estado do componente.
 import { useState } from 'react';
 
+// Importando o componente CurrencySelector que criamos anteriormente.
+import { CurrencySelector } from '@/components/CurrencySelector';
+
+// Criando um objeto com as taxas de câmbio para cada moeda.
+const taxas: Record<string, number> = {
+  USD: 5.30,
+  EUR: 6.20,
+  GBP: 7.10,
+};
+
 export default function HomeScreen() {
   // Criar o estado
   const [valor, setValor] = useState('');
   // Criar estado do resultado da conversão
   // Como estamos usando TypeScript, podemos definir o tipo do estado como number ou null, já que inicialmente não teremos um resultado.
   const [resultado, setResultado] = useState<number | null>(null);
+
+  // Estados da moeda selecionada
+  const [moedaOrigem, setMoedaOrigem] = useState('USD');
+  const [moedaDestino, setMoedaDestino] = useState('BRL');
 
   // Função de conversão que será chamada quando o usuário digitar um valor.
   const converter = () => {
@@ -24,7 +38,14 @@ export default function HomeScreen() {
       return;
     }
 
-    const cotacao = 5.30;
+    // Pega as taxas de câmbio da moeda de origem selecionada do objeto taxas. 
+    // Se a moeda de origem não estiver no objeto, cotacao será undefined.
+    const cotacao = taxas[moedaOrigem];
+
+    if (!cotacao) {
+      return;
+    }
+
     const valorConvertido = valorNumerico * cotacao;
 
     setResultado(valorConvertido);
@@ -43,6 +64,22 @@ export default function HomeScreen() {
         onChangeText={setValor} // Quando o usuário digitar algo, atualizamos o estado com o valor digitado.
         keyboardType="numeric"
         placeholder="Digite o valor"
+      />
+
+      <Text style={styles.label}>De</Text>
+
+      // Usando o componente CurrencySelector para selecionar a moeda de origem.
+      <CurrencySelector
+        currency={moedaOrigem}
+        onChange={setMoedaOrigem}
+      />
+
+      <Text style={styles.label}>Para</Text>
+
+      // Usando o componente CurrencySelector para selecionar a moeda de destino.
+      <CurrencySelector
+        currency={moedaDestino}
+        onChange={setMoedaDestino}
       />
 
       <Pressable style={styles.button} onPress={converter}>
