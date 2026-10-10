@@ -7,11 +7,11 @@ export function convertCurrency(
   from: string,
   to: string,
 ): number { // O retorno no final será um tipo number, que é o valor convertido.
-  // Dentro da lista currencies.ts localizamos o moeda de origem pelo código informado. Ex.: "USD" ou "BRL".
+  // Dentro da lista currencies.ts localizamos a moeda de origem pelo código informado. Ex.: "USD" ou "BRL".
   const fromCurrency = currencies.find(
     (currency) => currency.code === from,
   );
-  // Dentro da lista currencies.ts localizamos o moeda de destino pelo código informado. Ex.: "USD" ou "BRL".
+  // Dentro da lista currencies.ts localizamos a moeda de destino pelo código informado. Ex.: "USD" ou "BRL".
   const toCurrency = currencies.find(
     (currency) => currency.code === to,
   );
@@ -22,6 +22,6 @@ export function convertCurrency(
   // Primeiro, convertemos o valor para BRL (Real brasileiro), que é a moeda base.
   const amountInBrl = amount * fromCurrency.rate;
   // Depois, convertemos o valor em BRL para a moeda de destino.
-  // Ex.: Queremos USB para EUR. Primeiro convertemos USB para BRL, depois BRL para EUR.
+  // Ex.: Queremos USD para EUR. Primeiro convertemos USD para BRL, depois BRL para EUR.
   return amountInBrl / toCurrency.rate;
 }

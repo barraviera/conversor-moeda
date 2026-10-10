@@ -40,11 +40,13 @@ export function CurrencySelector({
                 <Text style={styles.currency}>{currency}</Text>
                 <Text style={styles.arrow}>▼</Text>
             </Pressable>
-
-            // O modal inicia fechado, e só é aberto quando o usuário pressiona o Pressable.
-            // Quando o modal é aberto, ele mostra uma lista de moedas disponíveis para seleção.
-            // Cada item da lista é um Pressable que, quando pressionado, chama a função handleSelect com o código da moeda selecionada.
-            // A função handleSelect chama a função onChange passada pelo pai e fecha o modal.
+            
+            {/*
+                O modal inicia fechado, e só é aberto quando o usuário pressiona o Pressable.
+                Quando o modal é aberto, ele mostra uma lista de moedas disponíveis para seleção.
+                Cada item da lista é um Pressable que, quando pressionado, chama a função handleSelect com o código da moeda selecionada.
+                A função handleSelect chama a função onChange passada pelo pai e fecha o modal.
+            */}
             <Modal
                 visible={visible}
                 transparent
@@ -55,11 +57,13 @@ export function CurrencySelector({
                     <View style={styles.modal}>
                         <Text style={styles.title}>Selecione uma moeda</Text>
 
-                        // No FlatList: "Pegue o array currencies e gere uma lista."
-                        // O FlatList renderiza cada item do array currencies como um Pressable.
-                        // Cada Pressable mostra o código e o nome da moeda.
-                        // Se a moeda do item for a mesma que a moeda atualmente selecionada, mostramos um ✓ ao lado.
-                        // Quando o usuário pressiona um item, chamamos handleSelect com o código da moeda selecionada.
+                        {/*
+                            No FlatList: "Pegue o array currencies e gere uma lista."
+                            O FlatList renderiza cada item do array currencies como um Pressable.
+                            Cada Pressable mostra o código e o nome da moeda.
+                            Se a moeda do item for a mesma que a moeda atualmente selecionada, mostramos um ✓ ao lado.
+                            Quando o usuário pressiona um item, chamamos handleSelect com o código da moeda selecionada.
+                        */}
                         <FlatList
                             data={currencies}
                             keyExtractor={(item) => item.code}

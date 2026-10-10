@@ -1,4 +1,5 @@
-// Lista de moedas disponíveis para conversão, com seus respectivos códigos, nomes e símbolos.
+// Lista de moedas disponíveis para conversão, com seus respectivos códigos, nomes, símbolos
+// e cotações (rate) em relação ao Real (BRL).
 export const currencies = [
   {
     code: 'BRL',

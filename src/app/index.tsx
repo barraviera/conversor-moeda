@@ -11,7 +11,6 @@ import { useState } from 'react';
 
 // Importando o componente CurrencySelector que criamos anteriormente.
 import { CurrencySelector } from '@/components/CurrencySelector';
-// Função matemática que faz a conversão de moedas, que criamos no arquivo currency.ts.
 // Importando a função getExchangeRate que criamos no arquivo currencyApi.ts, que faz a chamada à API de câmbio.
 import { getExchangeRate } from '@/services/currencyApi';
 
@@ -25,14 +24,16 @@ export default function HomeScreen() {
   // Estados da moeda selecionada
   const [moedaOrigem, setMoedaOrigem] = useState('USD');
 
+  // Indica se a cotação está sendo buscada, para desabilitar o botão e mostrar "CONVERTENDO...".
   const [carregando, setCarregando] = useState(false);
+  // Mensagem de erro exibida abaixo do botão; null quando não há erro.
   const [erro, setErro] = useState<string | null>(null);
 
-  // Função de conversão que será chamada quando o usuário digitar um valor.
+  // Função de conversão que será chamada quando o usuário pressionar o botão "CONVERTER".
   const converter = async () => {
     // Valor recebido do TextInput.
     const valorNumerico = Number(valor);
-    // Se o valor digitado não for um número válido, mostramos uma mensagem de erro.
+    // Se o valor digitado não for um número válido (ou for zero), mostramos uma mensagem de erro.
     if (!valorNumerico) {
       setErro('Digite um valor válido.');
       return;
@@ -74,9 +75,13 @@ export default function HomeScreen() {
       />
 
       <Text style={styles.label}>De</Text>
-
-      // Usando o componente CurrencySelector para selecionar a moeda de origem.
-      // Quando o usuário selecionar uma moeda, iremos limpar o resultado e o erro, para que o usuário saiba que precisa clicar em "CONVERTER" novamente.
+      
+      {/*
+        Usando o componente CurrencySelector para selecionar a moeda de origem.
+        Quando o usuário selecionar uma moeda, iremos limpar o resultado
+        e o erro, para que o usuário saiba que precisa clicar em
+        "CONVERTER" novamente.
+      */}
       <CurrencySelector
         currency={moedaOrigem}
         onChange={(currency) => {
@@ -163,6 +168,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
+    marginTop: 24,
     marginBottom: 24,
   },
 
