@@ -13,6 +13,8 @@ import { useState } from 'react';
 import { CurrencySelector } from '@/components/CurrencySelector';
 // Importando a função getExchangeRate que criamos no arquivo currencyApi.ts, que faz a chamada à API de câmbio.
 import { getExchangeRate } from '@/services/currencyApi';
+// Função para formatar o valor convertido em reais, que criamos no arquivo formatCurrency.ts.
+import { formatCurrencyBRL } from '@/utils/formatCurrency';
 
 export default function HomeScreen() {
   // Criar o estado
@@ -75,7 +77,7 @@ export default function HomeScreen() {
       />
 
       <Text style={styles.label}>De</Text>
-      
+
       {/*
         Usando o componente CurrencySelector para selecionar a moeda de origem.
         Quando o usuário selecionar uma moeda, iremos limpar o resultado
@@ -117,15 +119,9 @@ export default function HomeScreen() {
       )}
 
       {resultado !== null && (
-        <View style={styles.result}>
-          <Text style={styles.resultLabel}>
-            Resultado
-          </Text>
-
-          <Text style={styles.resultValue}>
-            R$ {resultado.toFixed(2)}
-          </Text>
-        </View>
+        <Text style={styles.result}>
+          {formatCurrencyBRL(resultado)}
+        </Text>
       )}
 
       <Text>Valor digitado: {valor}</Text>
