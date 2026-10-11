@@ -16,6 +16,9 @@ import { getExchangeRate } from '@/services/currencyApi';
 // Função para formatar o valor convertido em reais, que criamos no arquivo formatCurrency.ts.
 import { formatCurrencyBRL } from '@/utils/formatCurrency';
 
+// Importando a função parseAmount que criamos no arquivo parseAmount.ts, que normaliza o valor digitado pelo usuário e o converte em número.
+import { parseAmount } from '@/utils/parseAmount';
+
 export default function HomeScreen() {
   // Criar o estado
   const [valor, setValor] = useState('');
@@ -36,8 +39,9 @@ export default function HomeScreen() {
 
   // Função de conversão que será chamada quando o usuário pressionar o botão "CONVERTER".
   const converter = async () => {
-    // Valor recebido do TextInput.
-    const valorNumerico = Number(valor.trim());
+    // Usando a função parseAmount para normalizar o valor digitado pelo usuário e convertê-lo em número.
+    const valorNumerico = parseAmount(valor);
+    
     // Se o valor digitado for vazio ou não for um número válido, mostramos uma mensagem de erro e limpamos o resultado e a data da cotação.
     if (valor.trim() === '' || !Number.isFinite(valorNumerico)) {
       setErro('Digite um valor numérico válido.');
