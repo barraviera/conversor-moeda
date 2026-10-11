@@ -23,6 +23,9 @@ export default function HomeScreen() {
   // Como estamos usando TypeScript, podemos definir o tipo do estado como number ou null, já que inicialmente não teremos um resultado.
   const [resultado, setResultado] = useState<number | null>(null);
 
+  // Criar estado da data da cotação
+  const [dataCotacao, setDataCotacao] = useState<string | null>(null);
+
   // Estados da moeda selecionada
   const [moedaOrigem, setMoedaOrigem] = useState('USD');
 
@@ -45,15 +48,18 @@ export default function HomeScreen() {
       setCarregando(true);
       setErro(null);
       setResultado(null);
+      setDataCotacao(null);
+
       // A api é chamada, passando a moeda de origem e a moeda de destino (BRL).
       const cotacao = await getExchangeRate(
         moedaOrigem,
         'BRL',
       );
 
-      const valorConvertido = valorNumerico * cotacao;
+      const valorConvertido = valorNumerico * cotacao.rate;
 
       setResultado(valorConvertido);
+      setDataCotacao(cotacao.date);
     } catch (error) {
       setErro('Não foi possível obter a cotação.');
     } finally {
@@ -88,7 +94,11 @@ export default function HomeScreen() {
         currency={moedaOrigem}
         onChange={(currency) => {
           setMoedaOrigem(currency);
+
+          // Limpar resultado, data da cotação e erro quando a moeda de origem mudar.
           setResultado(null);
+          setDataCotacao(null);
+          // Limpar o erro, caso exista, para que o usuário saiba que precisa clicar em "CONVERTER" novamente.
           setErro(null);
         }}
       />
@@ -121,6 +131,12 @@ export default function HomeScreen() {
       {resultado !== null && (
         <Text style={styles.result}>
           {formatCurrencyBRL(resultado)}
+        </Text>
+      )}
+
+      {dataCotacao !== null && (
+        <Text style={styles.quoteDate}>
+          Cotação referente a: {dataCotacao}
         </Text>
       )}
 
@@ -213,6 +229,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 16,
+  },
+
+  quoteDate: {
+    fontSize: 13,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginTop: 8,
   },
 
 });

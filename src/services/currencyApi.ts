@@ -8,6 +8,13 @@ type ExchangeRateResponse = {
   rate: number;
 };
 
+// Definindo o formato do resultado da função getExchangeRate.
+// Vamos usar para informar ao TypeScript que a função retorna um objeto com a cotação e a data da cotação.
+export type ExchangeRateResult = {
+  rate: number;
+  date: string;
+};
+
 // Declarando a função assíncrona.
 // export: permite que outros arquivos importem a função.
 // async: permite utilizar await dentro da função e faz com que ela retorne uma Promise.
@@ -21,7 +28,7 @@ type ExchangeRateResponse = {
 export async function getExchangeRate(
   from: string,
   to: string,
-): Promise<number> {
+): Promise<ExchangeRateResult> { // Usamos ExchangeRateResult para indicar que a função retorna um objeto com rate e date.
   // Se to for diferente de BRL, lançamos um erro. Isso impede que a função seja usada para converter para outras moedas.
   if (to !== 'BRL') {
     throw new Error('A moeda de destino deve ser BRL.');
@@ -29,7 +36,10 @@ export async function getExchangeRate(
 
   // Não precisamos consultar a API para converter uma moeda para ela mesma.
   if (from === to) {
-    return 1;
+    return {
+      rate: 1,
+      date: new Date().toISOString().slice(0, 10),
+    };
   }
 
   // Fazendo a requisição HTTP para a API de câmbio.
@@ -69,7 +79,9 @@ export async function getExchangeRate(
   if (!Number.isFinite(data.rate) || data.rate <= 0) {
     throw new Error('A API retornou uma cotação inválida.');
   }
-  // Retornando a cotação.
-  // A função retorna somente o número, por exemplo, 5.30.
-  return data.rate;
+  // Ao inves de retornarmos somente a cotação, retornamos também a data da cotação. Isso é útil para exibir ao usuário quando a cotação foi obtida.
+  return {
+    rate: data.rate,
+    date: data.date,
+  };
 }
