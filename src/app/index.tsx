@@ -37,10 +37,19 @@ export default function HomeScreen() {
   // Função de conversão que será chamada quando o usuário pressionar o botão "CONVERTER".
   const converter = async () => {
     // Valor recebido do TextInput.
-    const valorNumerico = Number(valor);
-    // Se o valor digitado não for um número válido (ou for zero), mostramos uma mensagem de erro.
-    if (!valorNumerico) {
-      setErro('Digite um valor válido.');
+    const valorNumerico = Number(valor.trim());
+    // Se o valor digitado for vazio ou não for um número válido, mostramos uma mensagem de erro e limpamos o resultado e a data da cotação.
+    if (valor.trim() === '' || !Number.isFinite(valorNumerico)) {
+      setErro('Digite um valor numérico válido.');
+      setResultado(null);
+      setDataCotacao(null);
+      return;
+    }
+    // Se o valor digitado for menor ou igual a zero, mostramos uma mensagem de erro e limpamos o resultado e a data da cotação.
+    if (valorNumerico <= 0) {
+      setErro('Digite um valor maior que zero.');
+      setResultado(null);
+      setDataCotacao(null);
       return;
     }
 
@@ -65,7 +74,7 @@ export default function HomeScreen() {
       // Se o erro for uma instância de Error, usamos a mensagem do erro. Caso contrário, mostramos uma mensagem genérica.
       if (error instanceof Error) {
         setErro(error.message);
-      // Se o erro não for uma instância de Error, mostramos uma mensagem genérica.
+        // Se o erro não for uma instância de Error, mostramos uma mensagem genérica.
       } else {
         setErro('Ocorreu um erro inesperado. Tente novamente.');
       }
@@ -86,7 +95,7 @@ export default function HomeScreen() {
         style={styles.input}
         value={valor} // O valor visual do TextInput é controlado pelo estado valor.
         onChangeText={setValor} // Quando o usuário digitar algo, atualizamos o estado com o valor digitado.
-        keyboardType="numeric"
+        keyboardType="decimal-pad" // Oferece um teclado numérico com ponto decimal, adequado para digitar valores monetários.
         placeholder="Digite o valor"
       />
 
