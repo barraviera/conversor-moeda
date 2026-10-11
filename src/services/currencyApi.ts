@@ -56,15 +56,20 @@ export async function getExchangeRate(
   const response = await fetch(
     `https://api.frankfurter.dev/v2/rate/${from.toLowerCase()}/${to.toLowerCase()}`,
   );
-  // Verificando se a requisição deu certo
-  // A propriedade response.ok indica se a resposta HTTP tem status de sucesso, normalmente entre 200 e 299.
-  // O operador ! significa negação.
-  // Então quer dizer: "Se a resposta não for bem-sucedida, lance um erro".
-  if (!response.ok) {
+
+  // Se a resposta da requisição for 404, significa que não existe cotação para a moeda de origem e destino informadas. Lançamos um erro com uma mensagem explicativa.
+  if (response.status === 404) {
     throw new Error(
-      `Não foi possível obter a cotação de ${from} para ${to}.`,
+      `Não existe cotação disponível para ${from} → ${to}.`,
     );
   }
+  // Se a resposta da requisição não for 200, significa que houve algum problema com a API. Lançamos um erro com uma mensagem explicativa.
+  if (!response.ok) {
+    throw new Error(
+      'O serviço de cotações está indisponível. Tente novamente.',
+    );
+  }
+
   // Transformando o JSON em objeto.
   // Agora vamos ler o corpo da resposta.
   // O método response.json() interpreta o corpo JSON e retorna uma Promise com os dados convertidos para estruturas JavaScript, como objetos e números.

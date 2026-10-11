@@ -60,8 +60,16 @@ export default function HomeScreen() {
 
       setResultado(valorConvertido);
       setDataCotacao(cotacao.date);
+
     } catch (error) {
-      setErro('Não foi possível obter a cotação.');
+      // Se o erro for uma instância de Error, usamos a mensagem do erro. Caso contrário, mostramos uma mensagem genérica.
+      if (error instanceof Error) {
+        setErro(error.message);
+      // Se o erro não for uma instância de Error, mostramos uma mensagem genérica.
+      } else {
+        setErro('Ocorreu um erro inesperado. Tente novamente.');
+      }
+
     } finally {
       setCarregando(false);
     }
